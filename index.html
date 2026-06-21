@@ -572,6 +572,99 @@
     85% { opacity: 0.15; letter-spacing: 4px; }
   }
 
+  /* ===== Mobile Responsive ===== */
+  @media (max-width: 480px) {
+    .container {
+      padding: 12px 10px 32px;
+      border-left: none;
+      border-right: none;
+    }
+    .site-banner {
+      padding: 28px 16px 20px;
+      margin-bottom: 16px;
+    }
+    .site-banner::before {
+      font-size: 11px;
+      letter-spacing: 2px;
+    }
+    .site-title {
+      font-size: 24px;
+      letter-spacing: 4px;
+      line-height: 1.6;
+    }
+    .site-subtitle {
+      font-size: 13px;
+      letter-spacing: 3px;
+    }
+    .marquee-text {
+      font-size: 12px;
+      letter-spacing: 2px;
+    }
+    .pixel-nav {
+      margin-bottom: 16px;
+    }
+    .nav-tab {
+      font-size: 14px;
+      padding: 12px 6px;
+      letter-spacing: 2px;
+    }
+    .status-bar {
+      font-size: 12px;
+      padding: 10px 10px;
+      gap: 6px;
+    }
+    .pixel-box {
+      padding: 20px 14px;
+      margin-bottom: 16px;
+    }
+    .section-title {
+      font-size: 15px;
+      letter-spacing: 3px;
+    }
+    .msg-box {
+      font-size: 14px;
+      padding: 14px 14px;
+      line-height: 2;
+    }
+    .progress-label {
+      font-size: 11px;
+    }
+    .surveillance-cam {
+      max-width: 100%;
+      aspect-ratio: 4/3;
+    }
+    .surveillance-cam .cam-label {
+      font-size: 11px;
+    }
+    .error-dialog {
+      padding: 24px 18px;
+      max-width: 300px;
+    }
+    .error-dialog .err-title {
+      font-size: 16px;
+    }
+    .error-dialog .err-body {
+      font-size: 14px;
+    }
+    .error-dialog .err-btn {
+      font-size: 13px;
+      padding: 10px 32px;
+    }
+    footer {
+      font-size: 12px;
+      padding: 28px 0 12px;
+    }
+    .floater, .sparkle {
+      font-size: 14px;
+    }
+  }
+
+  /* ===== Touch Device: hide custom cursor ===== */
+  @media (hover: none) and (pointer: coarse) {
+    body { cursor: auto; }
+    .custom-cursor { display: none; }
+  }
+
   /* ===== Scrollbar ===== */
   ::-webkit-scrollbar { width: 5px; }
   ::-webkit-scrollbar-track { background: var(--void); }
@@ -692,6 +785,13 @@
 // ===== Custom Cursor =====
 const cursor = document.getElementById('cursor');
 const interactiveSelectors = 'a, button, .cursed-img, .msg-box, input, textarea, .pixel-box, .site-banner';
+
+// Disable custom cursor on touch devices
+const isTouchDevice = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
+if (isTouchDevice) {
+  cursor.style.display = 'none';
+  document.body.style.cursor = 'auto';
+}
 
 let mouseX = 0, mouseY = 0;
 let cursorX = 0, cursorY = 0;
