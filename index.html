@@ -1,0 +1,792 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>【は/や/く/夜/へ】</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DotGothic16&family=Syne+Mono&display=swap');
+
+  :root {
+    --blood: #8b0000;
+    --blood-bright: #cc1111;
+    --blood-dark: #3a0000;
+    --moss: #2d4a22;
+    --moss-bright: #446633;
+    --bone: #c8c0b0;
+    --ash: #666;
+    --void: #060608;
+    --abyss: #0d0d0d;
+    --purple-deep: #1a0020;
+    --pixel-size: 3px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--void);
+    color: var(--bone);
+    font-family: 'DotGothic16', 'MS PGothic', 'Courier New', monospace;
+    min-height: 100vh;
+    overflow-x: hidden;
+    image-rendering: pixelated;
+    image-rendering: crisp-edges;
+  }
+
+  /* ===== Custom Cursor ===== */
+  body { cursor: none; }
+  .custom-cursor {
+    position: fixed;
+    pointer-events: none;
+    z-index: 99999;
+    width: 24px; height: 24px;
+    transform: translate(-50%, -50%);
+    font-size: 20px;
+    line-height: 24px;
+    text-align: center;
+    filter: drop-shadow(0 0 6px rgba(204,17,17,0.8));
+    transition: transform 0.05s ease-out, font-size 0.1s;
+    will-change: transform;
+  }
+  .custom-cursor.hover { font-size: 28px; filter: drop-shadow(0 0 12px rgba(204,17,17,1)); }
+  .custom-cursor.clicking { font-size: 16px; }
+
+  /* ===== Static Noise Overlay ===== */
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+    background-size: 128px 128px;
+    pointer-events: none; z-index: 9998;
+    opacity: 0.5;
+    animation: static-shift 0.1s steps(2) infinite;
+  }
+  @keyframes static-shift {
+    0% { transform: translate(0, 0); }
+    50% { transform: translate(-1px, 1px); }
+  }
+
+  /* ===== Scanlines ===== */
+  .scanlines {
+    position: fixed; inset: 0;
+    pointer-events: none; z-index: 9997;
+    background: repeating-linear-gradient(
+      0deg, transparent, transparent 2px,
+      rgba(0,0,0,0.06) 2px, rgba(0,0,0,0.06) 4px
+    );
+  }
+
+  /* ===== Layout ===== */
+  .container {
+    position: relative; z-index: 1;
+    max-width: 640px; margin: 0 auto; padding: 24px 18px 40px;
+    border-left: 1px solid rgba(139,0,0,0.25);
+    border-right: 1px solid rgba(139,0,0,0.25);
+    min-height: 100vh;
+    background: rgba(6,6,8,0.75);
+  }
+
+  /* ===== Header Banner ===== */
+  .site-banner {
+    text-align: center;
+    border: var(--pixel-size) solid var(--blood);
+    padding: 36px 24px 28px;
+    background: var(--abyss);
+    position: relative;
+    margin-bottom: 24px;
+    box-shadow:
+      inset calc(var(--pixel-size) * -1) calc(var(--pixel-size) * -1) 0 0 rgba(0,0,0,0.5),
+      0 0 0 var(--pixel-size) var(--void),
+      0 0 0 calc(var(--pixel-size) * 2) var(--blood),
+      0 0 20px rgba(139,0,0,0.3);
+    animation: banner-flicker 4s ease-in-out infinite;
+  }
+  @keyframes banner-flicker {
+    0%, 100% { box-shadow: inset calc(var(--pixel-size) * -1) calc(var(--pixel-size) * -1) 0 0 rgba(0,0,0,0.5), 0 0 0 var(--pixel-size) var(--void), 0 0 0 calc(var(--pixel-size) * 2) var(--blood), 0 0 20px rgba(139,0,0,0.3); }
+    50% { box-shadow: inset calc(var(--pixel-size) * -1) calc(var(--pixel-size) * -1) 0 0 rgba(0,0,0,0.5), 0 0 0 var(--pixel-size) var(--void), 0 0 0 calc(var(--pixel-size) * 2) var(--blood), 0 0 40px rgba(204,17,17,0.4), 0 0 60px rgba(139,0,0,0.2); }
+  }
+
+  .site-banner::before {
+    content: '⚠ こ の 先 は 立 ち 入 り 禁 止 ⚠';
+    position: absolute;
+    top: 12px; left: 0; right: 0;
+    font-size: 11px;
+    color: var(--blood);
+    letter-spacing: 4px;
+    animation: warning-blink 2s step-end infinite;
+  }
+  @keyframes warning-blink {
+    0%, 100% { opacity: 1; }
+    35% { opacity: 0.2; }
+    70% { opacity: 1; }
+    85% { opacity: 0; }
+  }
+
+  .pixel-corner {
+    position: absolute;
+    width: 10px; height: 10px;
+    border: 2px solid var(--blood-bright);
+  }
+  .pixel-corner.tl { top: -2px; left: -2px; border-right: none; border-bottom: none; }
+  .pixel-corner.tr { top: -2px; right: -2px; border-left: none; border-bottom: none; }
+  .pixel-corner.bl { bottom: -2px; left: -2px; border-right: none; border-top: none; }
+  .pixel-corner.br { bottom: -2px; right: -2px; border-left: none; border-top: none; }
+
+  .site-title {
+    font-size: 32px;
+    color: var(--blood-bright);
+    text-shadow:
+      0 0 20px rgba(204,17,17,0.6),
+      0 0 40px rgba(139,0,0,0.4),
+      2px 2px 0 var(--blood-dark),
+      4px 4px 0 rgba(0,0,0,0.6);
+    letter-spacing: 8px;
+    margin-top: 16px;
+    position: relative;
+    animation: logo-pulse 2.5s ease-in-out infinite;
+    line-height: 1.8;
+  }
+  @keyframes logo-pulse {
+    0%, 100% { text-shadow: 0 0 20px rgba(204,17,17,0.6), 0 0 40px rgba(139,0,0,0.4), 2px 2px 0 var(--blood-dark), 4px 4px 0 rgba(0,0,0,0.6); }
+    50% { text-shadow: 0 0 30px rgba(255,30,30,0.8), 0 0 60px rgba(204,17,17,0.6), 2px 2px 0 var(--blood-dark), 4px 4px 0 rgba(0,0,0,0.6); }
+  }
+
+  .site-subtitle {
+    font-size: 12px;
+    color: var(--ash);
+    margin-top: 16px;
+    letter-spacing: 6px;
+    opacity: 0.65;
+  }
+
+  /* ===== Blood Drips ===== */
+  .blood-drip {
+    position: absolute; bottom: -6px; width: 2px;
+    background: var(--blood);
+    animation: drip 3s ease-in infinite;
+    border-radius: 0 0 50% 50%;
+  }
+  .blood-drip:nth-child(1) { left: 10%; height: 14px; animation-delay: 0s; }
+  .blood-drip:nth-child(2) { left: 26%; height: 22px; animation-delay: 1.2s; }
+  .blood-drip:nth-child(3) { left: 50%; height: 10px; animation-delay: 0.6s; }
+  .blood-drip:nth-child(4) { left: 72%; height: 18px; animation-delay: 2.1s; }
+  .blood-drip:nth-child(5) { left: 90%; height: 12px; animation-delay: 1.6s; }
+  @keyframes drip {
+    0% { height: 2px; opacity: 0.5; }
+    30% { height: var(--h, 14px); opacity: 1; }
+    65% { height: var(--h, 14px); opacity: 1; }
+    72% { height: calc(var(--h, 14px) + 8px); opacity: 0.8; }
+    78% { height: 2px; opacity: 0; }
+    100% { height: 2px; opacity: 0; }
+  }
+
+  /* ===== Pixel Divider ===== */
+  .pixel-divider {
+    display: flex; align-items: center; justify-content: center;
+    gap: 6px; margin: 0 0 24px; flex-wrap: wrap;
+  }
+  .pixel-divider span {
+    display: block; width: 6px; height: 6px;
+    background: var(--blood);
+    animation: divider-blink 1.5s ease-in-out infinite;
+  }
+  .pixel-divider span:nth-child(2n) { background: var(--blood-bright); animation-delay: 0.15s; }
+  .pixel-divider span:nth-child(3n) { background: var(--ash); animation-delay: 0.3s; }
+  .pixel-divider span:nth-child(4n) { background: var(--moss-bright); animation-delay: 0.45s; }
+  @keyframes divider-blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.25; }
+  }
+
+  /* ===== Glitch Text ===== */
+  .glitch {
+    position: relative;
+    color: var(--blood-bright);
+  }
+  .glitch::before,
+  .glitch::after {
+    content: attr(data-text);
+    position: absolute; top: 0; left: 0; width: 100%;
+  }
+  .glitch::before {
+    color: #0ff;
+    animation: glitch-shift 2s infinite linear alternate-reverse;
+    clip-path: polygon(0 0, 100% 0, 100% 45%, 0 45%);
+    opacity: 0.4;
+  }
+  .glitch::after {
+    color: #f0f;
+    animation: glitch-shift 1.5s infinite linear alternate;
+    clip-path: polygon(0 55%, 100% 55%, 100% 100%, 0 100%);
+    opacity: 0.4;
+  }
+  @keyframes glitch-shift {
+    0% { transform: translate(0); }
+    20% { transform: translate(-2px, 1px); }
+    40% { transform: translate(2px, -1px); }
+    60% { transform: translate(-1px, 0); }
+    80% { transform: translate(1px, 1px); }
+    100% { transform: translate(0); }
+  }
+
+  /* ===== Navigation Tabs ===== */
+  .pixel-nav {
+    display: flex;
+    gap: 0;
+    margin-bottom: 24px;
+    border: 1px solid rgba(139,0,0,0.35);
+  }
+  .nav-tab {
+    flex: 1;
+    text-align: center;
+    padding: 10px 8px;
+    font-size: 12px;
+    color: var(--ash);
+    background: rgba(13,13,13,0.8);
+    border-right: 1px solid rgba(139,0,0,0.25);
+    cursor: pointer;
+    letter-spacing: 3px;
+    transition: all 0.15s;
+    position: relative;
+    user-select: none;
+  }
+  .nav-tab:last-child { border-right: none; }
+  .nav-tab:hover {
+    color: var(--bone);
+    background: rgba(139,0,0,0.12);
+    text-shadow: 0 0 8px rgba(204,17,17,0.3);
+  }
+  .nav-tab.active {
+    color: var(--blood-bright);
+    background: rgba(139,0,0,0.18);
+    text-shadow: 0 0 12px rgba(204,17,17,0.5);
+    border-bottom: 2px solid var(--blood-bright);
+  }
+  .nav-tab:active {
+    background: rgba(139,0,0,0.3);
+    transform: scale(0.97);
+  }
+
+  /* ===== Marquee ===== */
+  .marquee-wrap {
+    overflow: hidden;
+    border-top: 1px solid rgba(139,0,0,0.2);
+    border-bottom: 1px solid rgba(139,0,0,0.2);
+    padding: 6px 0; margin: 0 0 24px;
+  }
+  .marquee-text {
+    font-size: 11px;
+    color: rgba(139,0,0,0.45);
+    white-space: nowrap;
+    animation: marquee 22s linear infinite;
+    letter-spacing: 3px;
+  }
+  @keyframes marquee {
+    0% { transform: translateX(100%); }
+    100% { transform: translateX(-100%); }
+  }
+
+  /* ===== Status Bar ===== */
+  .status-bar {
+    display: flex;
+    justify-content: space-between; align-items: center;
+    font-size: 11px;
+    padding: 10px 14px;
+    background: rgba(0,0,0,0.5);
+    border: 1px solid rgba(139,0,0,0.2);
+    margin-bottom: 24px;
+    flex-wrap: wrap; gap: 10px;
+    letter-spacing: 1px;
+  }
+  .status-dot {
+    width: 6px; height: 6px;
+    background: var(--moss-bright);
+    display: inline-block;
+    animation: dot-pulse 2s ease-in-out infinite;
+  }
+  @keyframes dot-pulse {
+    0%, 100% { opacity: 0.4; }
+    50% { opacity: 1; }
+  }
+
+  /* ===== Pixel Content Box ===== */
+  .pixel-box {
+    position: relative;
+    background: rgba(13,13,13,0.9);
+    border: var(--pixel-size) solid var(--blood);
+    box-shadow:
+      inset calc(var(--pixel-size) * -1) calc(var(--pixel-size) * -1) 0 0 rgba(0,0,0,0.5),
+      0 0 0 var(--pixel-size) var(--void),
+      0 0 0 calc(var(--pixel-size) * 2) var(--blood),
+      0 0 16px rgba(139,0,0,0.25);
+    padding: 28px 22px;
+    margin-bottom: 24px;
+    animation: box-flicker 5s ease-in-out infinite;
+  }
+  @keyframes box-flicker {
+    0%, 100% { box-shadow: inset calc(var(--pixel-size) * -1) calc(var(--pixel-size) * -1) 0 0 rgba(0,0,0,0.5), 0 0 0 var(--pixel-size) var(--void), 0 0 0 calc(var(--pixel-size) * 2) var(--blood), 0 0 16px rgba(139,0,0,0.25); }
+    50% { box-shadow: inset calc(var(--pixel-size) * -1) calc(var(--pixel-size) * -1) 0 0 rgba(0,0,0,0.5), 0 0 0 var(--pixel-size) var(--void), 0 0 0 calc(var(--pixel-size) * 2) var(--blood), 0 0 30px rgba(204,17,17,0.35), 0 0 50px rgba(139,0,0,0.15); }
+  }
+
+  .section-title {
+    font-size: 14px;
+    color: var(--blood-bright);
+    letter-spacing: 5px;
+    margin-bottom: 18px;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .section-title::before,
+  .section-title::after {
+    content: '†';
+    font-size: 16px;
+    animation: cross-fade 2s ease-in-out infinite;
+  }
+  @keyframes cross-fade {
+    0%, 100% { opacity: 0.4; }
+    50% { opacity: 1; }
+  }
+
+  .msg-box {
+    background: rgba(6,6,8,0.95);
+    border: 1px solid rgba(139,0,0,0.3);
+    padding: 18px 20px;
+    font-size: 13px;
+    line-height: 2.2;
+    color: var(--bone);
+    margin: 14px 0;
+    position: relative;
+  }
+  .msg-box::after {
+    content: '▼';
+    position: absolute;
+    bottom: 8px; right: 14px;
+    font-size: 12px;
+    color: var(--blood);
+    animation: blink-arrow 0.8s step-end infinite;
+  }
+  @keyframes blink-arrow {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+  }
+
+  /* ===== Progress Bars ===== */
+  .pixel-progress {
+    height: 8px;
+    background: rgba(139,0,0,0.08);
+    border: 1px solid rgba(139,0,0,0.2);
+    position: relative; margin: 10px 0;
+  }
+  .pixel-progress .fill {
+    height: 100%;
+    background: repeating-linear-gradient(
+      90deg, var(--blood) 0px, var(--blood) 4px,
+      var(--blood-bright) 4px, var(--blood-bright) 8px
+    );
+    transition: width 0.5s step-end;
+    animation: progress-glow 2s ease-in-out infinite;
+  }
+  @keyframes progress-glow {
+    0%, 100% { filter: brightness(1); }
+    50% { filter: brightness(1.4); }
+  }
+  .progress-label {
+    display: flex; justify-content: space-between;
+    font-size: 10px; color: rgba(200,192,176,0.45);
+    letter-spacing: 1px;
+  }
+
+  /* ===== Cursed Image ===== */
+  .surveillance-cam {
+    width: 100%; max-width: 400px;
+    aspect-ratio: 4/3;
+    background: #000;
+    border: 1px solid rgba(139,0,0,0.4);
+    margin: 16px auto;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    position: relative; overflow: hidden;
+    cursor: pointer;
+  }
+  .surveillance-cam .cam-lens {
+    width: 40px; height: 40px;
+    border: 3px solid rgba(139,0,0,0.5);
+    border-radius: 50%;
+    position: relative;
+    animation: cam-scan 3s ease-in-out infinite;
+  }
+  .surveillance-cam .cam-lens::before {
+    content: '';
+    position: absolute;
+    top: 50%; left: 50%;
+    width: 12px; height: 12px;
+    background: var(--blood-bright);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    box-shadow: 0 0 12px rgba(204,17,17,0.8), 0 0 24px rgba(204,17,17,0.4);
+    animation: lens-glow 1.5s ease-in-out infinite;
+  }
+  .surveillance-cam .cam-label {
+    margin-top: 12px;
+    font-size: 9px;
+    color: var(--ash);
+    letter-spacing: 3px;
+    animation: rec-blink 0.8s step-end infinite;
+  }
+  @keyframes cam-scan {
+    0%, 100% { transform: rotate(-5deg); }
+    50% { transform: rotate(5deg); }
+  }
+  @keyframes lens-glow {
+    0%, 100% { opacity: 0.6; }
+    50% { opacity: 1; box-shadow: 0 0 20px rgba(204,17,17,0.9), 0 0 36px rgba(204,17,17,0.5); }
+  }
+  @keyframes rec-blink {
+    0%, 100% { color: var(--blood-bright); }
+    50% { color: transparent; }
+  }
+
+  /* Error Modal */
+  .error-modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.85);
+    z-index: 100000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s;
+  }
+  .error-modal.active {
+    opacity: 1;
+    pointer-events: all;
+  }
+  .error-dialog {
+    background: #111;
+    border: 2px solid var(--blood-bright);
+    box-shadow: 0 0 30px rgba(204,17,17,0.3), inset 0 0 20px rgba(139,0,0,0.1);
+    padding: 32px 28px;
+    text-align: center;
+    max-width: 360px;
+    width: 90%;
+    animation: modal-in 0.2s ease-out;
+  }
+  @keyframes modal-in {
+    0% { transform: scale(0.9); opacity: 0; }
+    100% { transform: scale(1); opacity: 1; }
+  }
+  .error-dialog .err-icon {
+    font-size: 36px;
+    margin-bottom: 12px;
+    display: block;
+  }
+  .error-dialog .err-title {
+    font-size: 14px;
+    color: var(--blood-bright);
+    letter-spacing: 4px;
+    margin-bottom: 16px;
+  }
+  .error-dialog .err-body {
+    font-size: 12px;
+    color: var(--bone);
+    line-height: 2;
+    margin-bottom: 20px;
+  }
+  .error-dialog .err-btn {
+    background: transparent;
+    border: 1px solid var(--blood);
+    color: var(--blood-bright);
+    padding: 8px 28px;
+    font-family: inherit;
+    font-size: 11px;
+    cursor: pointer;
+    letter-spacing: 3px;
+    transition: all 0.15s;
+  }
+  .error-dialog .err-btn:hover {
+    background: rgba(139,0,0,0.2);
+    box-shadow: 0 0 12px rgba(139,0,0,0.3);
+  }
+
+  /* ===== Random Glitch ===== */
+  .random-glitch {
+    animation: random-shake 0.15s ease-out;
+  }
+  @keyframes random-shake {
+    0% { transform: translate(0); }
+    20% { transform: translate(-3px, 2px); filter: hue-rotate(90deg); }
+    40% { transform: translate(3px, -1px); }
+    60% { transform: translate(-1px, 3px); filter: hue-rotate(-90deg); }
+    80% { transform: translate(2px, -2px); }
+    100% { transform: translate(0); filter: hue-rotate(0); }
+  }
+
+  /* ===== Floating Eyes ===== */
+  .floater {
+    position: fixed;
+    pointer-events: none;
+    z-index: 9996;
+    font-size: 20px;
+    opacity: 0;
+    animation: float-up 10s linear forwards;
+  }
+  @keyframes float-up {
+    0% { opacity: 0; transform: translateY(0); }
+    6% { opacity: 0.12; }
+    90% { opacity: 0.08; }
+    100% { opacity: 0; transform: translateY(-100vh); }
+  }
+
+  /* ===== Sparkle Click Effect ===== */
+  .sparkle {
+    position: fixed;
+    pointer-events: none;
+    z-index: 99995;
+    font-size: 18px;
+    animation: sparkle-fly 0.7s ease-out forwards;
+    filter: drop-shadow(0 0 6px rgba(204,17,17,0.7));
+  }
+  @keyframes sparkle-fly {
+    0% { opacity: 1; transform: translate(0,0) scale(1.2); }
+    100% { opacity: 0; transform: translate(var(--sx), var(--sy)) scale(0); }
+  }
+
+  /* ===== Footer ===== */
+  footer {
+    text-align: center;
+    font-size: 11px;
+    color: rgba(200,192,176,0.3);
+    padding: 36px 0 16px;
+    letter-spacing: 4px;
+    border-top: 1px solid rgba(139,0,0,0.12);
+    margin-top: 16px;
+  }
+  footer .cursed-text {
+    color: var(--blood);
+    opacity: 0.35;
+    animation: text-corrupt 8s ease-in-out infinite;
+  }
+  @keyframes text-corrupt {
+    0%, 80%, 100% { opacity: 0.35; letter-spacing: 4px; }
+    82% { opacity: 1; letter-spacing: 10px; }
+    85% { opacity: 0.15; letter-spacing: 4px; }
+  }
+
+  /* ===== Scrollbar ===== */
+  ::-webkit-scrollbar { width: 5px; }
+  ::-webkit-scrollbar-track { background: var(--void); }
+  ::-webkit-scrollbar-thumb { background: rgba(139,0,0,0.35); border: 1px solid var(--void); }
+  ::selection { background: rgba(139,0,0,0.4); color: var(--bone); }
+</style>
+</head>
+<body>
+
+<div class="scanlines"></div>
+<div class="custom-cursor" id="cursor">👁</div>
+
+<div class="container">
+  <!-- Header Banner -->
+  <header class="site-banner">
+    <div class="pixel-corner tl"></div>
+    <div class="pixel-corner tr"></div>
+    <div class="pixel-corner bl"></div>
+    <div class="pixel-corner br"></div>
+    <div class="blood-drip" style="--h: 14px;"></div>
+    <div class="blood-drip" style="--h: 22px;"></div>
+    <div class="blood-drip" style="--h: 10px;"></div>
+    <div class="blood-drip" style="--h: 18px;"></div>
+    <div class="blood-drip" style="--h: 12px;"></div>
+    <h1 class="site-title glitch" data-text="は や く 夜 へ">は や く 夜 へ</h1>
+    <p class="site-subtitle">2026 @ atta · okeyoi</p>
+  </header>
+
+  <!-- Divider -->
+  <div class="pixel-divider">
+    <span></span><span></span><span></span><span></span><span></span>
+    <span></span><span></span><span></span><span></span><span></span>
+    <span></span><span></span><span></span><span></span><span></span>
+  </div>
+
+  <!-- Marquee -->
+  <div class="marquee-wrap">
+    <div class="marquee-text">
+      警告：この先は立ち入り禁止です　――　ドアをノックする音が聞こえたら、決して開けてはいけません　――　
+      あ な た は 一 人 じ ゃ な い　――　はやく　夜へ
+    </div>
+  </div>
+
+  <!-- Navigation Tabs -->
+  <nav class="pixel-nav">
+    <span class="nav-tab active" data-tab="character">人物</span>
+    <span class="nav-tab" data-tab="story">故事</span>
+    <span class="nav-tab" data-tab="observe">観測</span>
+  </nav>
+
+  <!-- Status Bar -->
+  <div class="status-bar">
+    <span><span class="status-dot"></span> ONLINE</span>
+    <span>† LV.??</span>
+    <span>🕐 午前零時</span>
+    <span style="color:var(--ash);">◆ CONNECTED</span>
+  </div>
+
+  <!-- Main Content Box -->
+  <div class="pixel-box">
+    <div class="pixel-corner tl" style="border-color:var(--blood-bright);"></div>
+    <div class="pixel-corner tr" style="border-color:var(--blood-bright);"></div>
+    <div class="section-title">† 閲覧注意 †</div>
+    <div class="msg-box">
+      <span style="color:var(--blood-bright);">【 尋 人 啟 事 】</span><br><br>
+      █月█日　午前█時頃<br>
+      東京都██線　██駅構内にて<br>
+      24歳前後と見られる成人男性が行方不明。<br><br>
+      特徴：黒色の会社制服を着用。<br>
+      8歳前後の女児（███）と手をつないでいた。<br><br>
+      お心当たりのある方は下記までご連絡ください。<br>
+      <span style="color:var(--ash);">TEL: ██-████-████</span>
+    </div>
+    <div class="progress-label" style="margin-top:14px;">
+      <span>SAN</span>
+      <span>??? / ????</span>
+    </div>
+    <div class="pixel-progress">
+      <div class="fill" style="width: 67%;"></div>
+    </div>
+  </div>
+
+  <!-- Surveillance Camera -->
+  <div class="surveillance-cam" id="surveillance-cam">
+    <div class="cam-lens"></div>
+    <div class="cam-label">● REC</div>
+  </div>
+  <div style="text-align:center;font-size:11px;color:var(--ash);margin-bottom:24px;letter-spacing:2px;">
+    <span style="color:var(--blood);">※</span> 監視カメラ映像 ─ 外部接続不可 <span style="color:var(--blood);">※</span>
+  </div>
+
+  <!-- Error Modal -->
+  <div class="error-modal" id="error-modal">
+    <div class="error-dialog">
+      <span class="err-icon">⚠</span>
+      <div class="err-title">ERROR</div>
+      <div class="err-body">
+        現在観測中です<br>
+        画面を閉じないでください
+      </div>
+      <button class="err-btn" id="err-close">戻 る</button>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <p>【は/や/く/夜/へ】</p>
+    <p style="margin-top:8px;">
+      <span class="cursed-text">て つ だ っ て</span>
+    </p>
+    <p style="margin-top:6px; opacity:0.2;">
+      当サイトの内容はすべてフィクションです。
+    </p>
+  </footer>
+</div>
+
+<script>
+// ===== Custom Cursor =====
+const cursor = document.getElementById('cursor');
+const interactiveSelectors = 'a, button, .cursed-img, .msg-box, input, textarea, .pixel-box, .site-banner';
+
+let mouseX = 0, mouseY = 0;
+let cursorX = 0, cursorY = 0;
+
+document.addEventListener('mousemove', (e) => {
+  mouseX = e.clientX;
+  mouseY = e.clientY;
+  const target = e.target;
+  if (target.closest(interactiveSelectors)) {
+    cursor.classList.add('hover');
+  } else {
+    cursor.classList.remove('hover');
+  }
+});
+
+document.addEventListener('mousedown', () => { cursor.classList.add('clicking'); });
+document.addEventListener('mouseup', () => { cursor.classList.remove('clicking'); });
+
+function animateCursor() {
+  cursorX += (mouseX - cursorX) * 0.35;
+  cursorY += (mouseY - cursorY) * 0.35;
+  cursor.style.left = cursorX + 'px';
+  cursor.style.top = cursorY + 'px';
+  requestAnimationFrame(animateCursor);
+}
+cursor.style.left = '-100px';
+cursor.style.top = '-100px';
+animateCursor();
+
+// ===== Sparkle Click Effect =====
+const sparkleSymbols = ['†', '✧', '・', '×', '◆', '◈', '⬥', '☠', '⚰'];
+
+document.addEventListener('click', (e) => {
+  const count = 4 + Math.floor(Math.random() * 5);
+  for (let i = 0; i < count; i++) {
+    const sparkle = document.createElement('div');
+    sparkle.className = 'sparkle';
+    sparkle.textContent = sparkleSymbols[Math.floor(Math.random() * sparkleSymbols.length)];
+    sparkle.style.left = e.clientX + 'px';
+    sparkle.style.top = e.clientY + 'px';
+    sparkle.style.setProperty('--sx', (Math.random() * 60 - 30) + 'px');
+    sparkle.style.setProperty('--sy', (Math.random() * -60 - 10) + 'px');
+    sparkle.style.animationDuration = (0.4 + Math.random() * 0.5) + 's';
+    sparkle.style.fontSize = (14 + Math.random() * 18) + 'px';
+    document.body.appendChild(sparkle);
+    setTimeout(() => sparkle.remove(), 800);
+  }
+});
+
+// ===== Random Glitch Events =====
+function triggerRandomGlitch() {
+  const container = document.querySelector('.container');
+  container.classList.add('random-glitch');
+  setTimeout(() => container.classList.remove('random-glitch'), 180);
+  setTimeout(triggerRandomGlitch, 6000 + Math.random() * 16000);
+}
+setTimeout(triggerRandomGlitch, 10000);
+
+// ===== Floating Eyes =====
+const eyeSymbols = ['👁', '・', '○', '◎', '◉', '⬤'];
+function spawnFloater() {
+  const floater = document.createElement('div');
+  floater.className = 'floater';
+  floater.textContent = eyeSymbols[Math.floor(Math.random() * eyeSymbols.length)];
+  floater.style.left = (5 + Math.random() * 90) + '%';
+  floater.style.top = '100%';
+  floater.style.animationDuration = (8 + Math.random() * 12) + 's';
+  document.body.appendChild(floater);
+  setTimeout(() => floater.remove(), 20000);
+}
+setInterval(spawnFloater, 5000 + Math.random() * 7000);
+
+// ===== Surveillance Camera → Error Modal =====
+document.getElementById('surveillance-cam').addEventListener('click', function() {
+  document.getElementById('error-modal').classList.add('active');
+});
+document.getElementById('err-close').addEventListener('click', function() {
+  document.getElementById('error-modal').classList.remove('active');
+});
+document.getElementById('error-modal').addEventListener('click', function(e) {
+  if (e.target === this) this.classList.remove('active');
+});
+
+// ===== Navigation Tab Switching =====
+document.querySelectorAll('.nav-tab').forEach(tab => {
+  tab.addEventListener('click', function() {
+    document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+    this.classList.add('active');
+  });
+});
+
+// ===== Console Easter Egg =====
+console.log('%cあなたはここにいるべきではありません', 'color:#8b0000;font-size:20px;font-family:monospace;');
+console.log('%cはやく...夜へ...', 'color:#666;font-size:14px;font-family:monospace;');
+</script>
+
+</body>
+</html>
