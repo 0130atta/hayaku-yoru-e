@@ -283,6 +283,84 @@
     100% { transform: translateX(-100%); }
   }
 
+  /* ===== Collapsible Detail ===== */
+  .pixel-details { margin: 14px 0; }
+  .pixel-details summary {
+    cursor: pointer;
+    color: var(--blood-bright);
+    font-size: 13px;
+    letter-spacing: 3px;
+    padding: 10px 14px;
+    border: 1px solid rgba(139,0,0,0.35);
+    background: rgba(139,0,0,0.06);
+    transition: all 0.15s;
+    list-style: none;
+    user-select: none;
+  }
+  .pixel-details summary::-webkit-details-marker { display: none; }
+  .pixel-details summary::before { content: '▶ '; font-size: 10px; }
+  .pixel-details[open] summary::before { content: '▼ '; }
+  .pixel-details summary:hover {
+    background: rgba(139,0,0,0.15);
+    border-color: var(--blood-bright);
+  }
+  .pixel-details .details-inner {
+    border: 1px solid rgba(139,0,0,0.2);
+    border-top: none;
+    padding: 16px 14px;
+    font-size: 13px;
+    line-height: 2.2;
+    color: var(--bone);
+    background: rgba(6,6,8,0.7);
+  }
+
+  /* ===== Blackout Text (hover reveal) ===== */
+  .blackout {
+    display: inline;
+    background: #111;
+    color: transparent;
+    padding: 1px 4px;
+    border-radius: 2px;
+    transition: all 0.3s;
+    cursor: default;
+    user-select: none;
+  }
+  .blackout:hover {
+    background: transparent;
+    color: var(--bone);
+    user-select: auto;
+  }
+  .blackout-block {
+    display: block;
+    background: #111;
+    color: transparent;
+    padding: 12px 14px;
+    margin: 10px 0;
+    border: 1px solid rgba(139,0,0,0.15);
+    line-height: 2.2;
+    font-size: 13px;
+    transition: all 0.3s;
+    cursor: default;
+    user-select: none;
+  }
+  .blackout-block:hover {
+    background: rgba(6,6,8,0.7);
+    color: var(--bone);
+    border-color: rgba(139,0,0,0.3);
+    user-select: auto;
+  }
+
+  .prof-label {
+    display: inline-block;
+    color: var(--ash);
+    min-width: 80px;
+    letter-spacing: 2px;
+  }
+  .prof-value {
+    color: var(--bone);
+    letter-spacing: 1px;
+  }
+
   /* ===== Tab Panels ===== */
   .tab-panel { display: none; }
   .tab-panel.active { display: block; }
@@ -722,28 +800,43 @@
     <div class="pixel-box">
       <div class="pixel-corner tl" style="border-color:var(--blood-bright);"></div>
       <div class="pixel-corner tr" style="border-color:var(--blood-bright);"></div>
-      <div class="section-title">† 登 場 人 物 †</div>
-      <div class="msg-box" style="margin-bottom:16px;">
-        <span style="color:var(--blood-bright);">【 行 方 不 明 者 A 】</span><br>
-        <span style="color:var(--ash);">████ 某</span>　推定24歳　男性<br>
-        黒色の会社制服を着用。都内IT企業勤務と見られる。<br>
-        身長172cm前後、痩せ型。眼鏡あり。<br>
-        最終目撃：██駅改札前　午前█時頃
-      </div>
-      <div class="msg-box" style="margin-bottom:16px;">
-        <span style="color:var(--blood-bright);">【 同 行 者 B 】</span><br>
-        <span style="color:var(--ash);">████ ██</span>　推定8歳　女児<br>
-        黒髪ロング、赤いリボン。紺色のワンピース着用。<br>
-        Aとは親子関係にあるかは不明。<br>
-        ██時頃、Aと手をつないで駅構内を歩く姿が監視カメラに記録されている。
-      </div>
+      <div class="section-title">† 人 物 檔 案 †</div>
       <div class="msg-box">
-        <span style="color:var(--blood-bright);">【 関 係 者 C 】</span><br>
-        <span style="color:var(--ash);">█████ ██</span>　年齢不詳<br>
-        Aの同僚を名乗り、失踪の前日にAと長時間電話していた記録あり。<br>
-        事情聴取に応じているが、供述に矛盾が多く見られる。<br>
-        <span style="color:var(--ash); font-size: 11px;">※ この人物に関する情報提供を特に求めています。</span>
+        <span style="color:var(--blood-bright); font-size:15px;">鬼 追 風 語</span><br>
+        <span style="color:var(--ash); font-size:11px;">ONIOI FUUKO</span><br><br>
+        <span class="prof-label">性別</span><span class="prof-value">男性</span><br>
+        <span class="prof-label">年齡</span><span class="prof-value">25歲</span><br>
+        <span class="prof-label">身高</span><span class="prof-value">177cm</span><br>
+        <span class="prof-label">外貌</span><span class="prof-value">近視，黑色微卷長髮，身形高瘦，左側眼睛被瀏海遮住，嘴角有小痣，黑眼圈。</span>
       </div>
+
+      <!-- Collapsible: 基本情報 -->
+      <details class="pixel-details" open>
+        <summary>▲ 基 本 情 報</summary>
+        <div class="details-inner">
+          看起來不擅長與人相處的人類。<br><br>
+          居所在東京都內，一個人租房獨居。和家裡關係不好，因此沒有任何研學和回老家的念頭，一出學校便進入社會開始沒日沒夜地工作，整個人也逐漸籠罩上死之意的可憐IT社畜。<br><br>
+          非常怕麻煩，個性冷淡甚至冷漠，為人沉默寡言，幾乎沒有社交，每天彷彿工作機器般自虐的人。或許是作息問題，陰氣略重，有靈異體質。日常生活中十分倒霉，經常遇到各種糟糕的巧合。<br><br>
+          在機緣巧合之下喚醒了<span style="color:var(--blood-bright);">瞳</span>，目前正在過著和瞳同居的奇怪日常。
+        </div>
+      </details>
+
+      <!-- Blackout Block: 本質 -->
+      <div class="blackout-block">
+        本質是比「怪物」更像「怪物」這個概念的空心人。因為沒有明確的生活目標，而始終得過且過地虛度著人生。母親未婚先孕，在這樣單親家庭之中承受了十分恐怖的控制和壓力，因此養成了現在陰暗的個性。命運被瞳的「詛咒」關聯著，悲慘的人生或多或少有受到其影響。
+      </div>
+
+      <!-- Collapsible: 前世 -->
+      <details class="pixel-details">
+        <summary>◆ 前 世</summary>
+        <div class="details-inner">
+          天賦異稟的少年陰陽師。原本是在街頭流浪的孤兒，被寺廟的大師發現了特殊的才能，帶回院中培養。<br><br>
+          因為兒時顛沛流離的經歷，導致形成了扭曲的人格，無法理解陰陽師們對於道德的約束和追求，被寺院除名。<br><br>
+          為了謀生而接取了各式各樣的委託，受城中貴族所脅迫，替追求永生的城主找來曾經八百比丘尼服下的人魚肉。貪生怕死的城主將人魚肉分給宅邸中的人作為試驗品，要求風語解決因為吃下肉而徹底異變的人，後被害怕洩密的城主軟禁在宅邸之中。<br><br>
+          在宅邸裡偶然與瞳相識，直到親手將肉給瞳服下，風語終於理解了人類的痛苦。在叛亂來到城中時，趁著戰火逃出宅邸，卻和瞳失散，直到紛爭平息後才找到瞳的埋骨地。<br><br>
+          為了不讓瞳的怨念波及他人，決定孤身一人承擔人魚的詛咒，留在了瞳的身邊。
+        </div>
+      </details>
     </div>
   </div>
 
