@@ -283,6 +283,10 @@
     100% { transform: translateX(-100%); }
   }
 
+  /* ===== Tab Panels ===== */
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+
   /* ===== Status Bar ===== */
   .status-bar {
     display: flex;
@@ -713,45 +717,91 @@
     <span class="nav-tab" data-tab="observe">観測</span>
   </nav>
 
-  <!-- Status Bar -->
-  <div class="status-bar">
-    <span><span class="status-dot"></span> ONLINE</span>
-    <span>† LV.??</span>
-    <span>🕐 午前零時</span>
-    <span style="color:var(--ash);">◆ CONNECTED</span>
-  </div>
-
-  <!-- Main Content Box -->
-  <div class="pixel-box">
-    <div class="pixel-corner tl" style="border-color:var(--blood-bright);"></div>
-    <div class="pixel-corner tr" style="border-color:var(--blood-bright);"></div>
-    <div class="section-title">† 閲覧注意 †</div>
-    <div class="msg-box">
-      <span style="color:var(--blood-bright);">【 尋 人 啟 事 】</span><br><br>
-      █月█日　午前█時頃<br>
-      東京都██線　██駅構内にて<br>
-      24歳前後と見られる成人男性が行方不明。<br><br>
-      特徴：黒色の会社制服を着用。<br>
-      8歳前後の女児（███）と手をつないでいた。<br><br>
-      お心当たりのある方は下記までご連絡ください。<br>
-      <span style="color:var(--ash);">TEL: ██-████-████</span>
-    </div>
-    <div class="progress-label" style="margin-top:14px;">
-      <span>SAN</span>
-      <span>??? / ????</span>
-    </div>
-    <div class="pixel-progress">
-      <div class="fill" style="width: 67%;"></div>
+  <!-- ===== TAB: 人物 ===== -->
+  <div class="tab-panel active" id="panel-character">
+    <div class="pixel-box">
+      <div class="pixel-corner tl" style="border-color:var(--blood-bright);"></div>
+      <div class="pixel-corner tr" style="border-color:var(--blood-bright);"></div>
+      <div class="section-title">† 登 場 人 物 †</div>
+      <div class="msg-box" style="margin-bottom:16px;">
+        <span style="color:var(--blood-bright);">【 行 方 不 明 者 A 】</span><br>
+        <span style="color:var(--ash);">████ 某</span>　推定24歳　男性<br>
+        黒色の会社制服を着用。都内IT企業勤務と見られる。<br>
+        身長172cm前後、痩せ型。眼鏡あり。<br>
+        最終目撃：██駅改札前　午前█時頃
+      </div>
+      <div class="msg-box" style="margin-bottom:16px;">
+        <span style="color:var(--blood-bright);">【 同 行 者 B 】</span><br>
+        <span style="color:var(--ash);">████ ██</span>　推定8歳　女児<br>
+        黒髪ロング、赤いリボン。紺色のワンピース着用。<br>
+        Aとは親子関係にあるかは不明。<br>
+        ██時頃、Aと手をつないで駅構内を歩く姿が監視カメラに記録されている。
+      </div>
+      <div class="msg-box">
+        <span style="color:var(--blood-bright);">【 関 係 者 C 】</span><br>
+        <span style="color:var(--ash);">█████ ██</span>　年齢不詳<br>
+        Aの同僚を名乗り、失踪の前日にAと長時間電話していた記録あり。<br>
+        事情聴取に応じているが、供述に矛盾が多く見られる。<br>
+        <span style="color:var(--ash); font-size: 11px;">※ この人物に関する情報提供を特に求めています。</span>
+      </div>
     </div>
   </div>
 
-  <!-- Surveillance Camera -->
-  <div class="surveillance-cam" id="surveillance-cam">
-    <div class="cam-lens"></div>
-    <div class="cam-label">● REC</div>
+  <!-- ===== TAB: 故事 ===== -->
+  <div class="tab-panel" id="panel-story">
+    <div class="pixel-box">
+      <div class="pixel-corner tl" style="border-color:var(--blood-bright);"></div>
+      <div class="pixel-corner tr" style="border-color:var(--blood-bright);"></div>
+      <div class="section-title">† 事 件 概 要 †</div>
+      <div class="msg-box">
+        <span style="color:var(--blood-bright);">【 発 端 】</span><br><br>
+        █月█日深夜、東京都██線██駅の防犯カメラに不可解な映像が記録された。<br><br>
+        最終電車が発車した後の無人ホームに、成人男性（A）と女児（B）が現れる。<br>
+        二人は改札を抜け、駅構内を数分間歩き回った後、ホーム先端の立入禁止区域へ。<br><br>
+        <span style="color:var(--blood-bright);">【 異 変 】</span><br><br>
+        直後、カメラ映像に██秒間のノイズが走る。<br>
+        映像復帰後、二人の姿は消えていた。<br>
+        ホームにはBが着用していたと見られる<span style="color:var(--blood);">赤いリボン</span>だけが落ちていた。<br><br>
+        <span style="color:var(--blood-bright);">【 現 在 】</span><br><br>
+        警察による捜索は現在も継続中。<br>
+        駅周辺では深夜に<span style="color:var(--blood-bright);">子供の足音</span>が聞こえるとの証言が複数寄せられている。<br>
+        <span style="color:var(--ash);">※ 深夜の██駅周辺への不要不急の立ち入りはお控えください。</span>
+      </div>
+    </div>
   </div>
-  <div style="text-align:center;font-size:11px;color:var(--ash);margin-bottom:24px;letter-spacing:2px;">
-    <span style="color:var(--blood);">※</span> 監視カメラ映像 ─ 外部接続不可 <span style="color:var(--blood);">※</span>
+
+  <!-- ===== TAB: 観測 ===== -->
+  <div class="tab-panel" id="panel-observe">
+    <div class="pixel-box">
+      <div class="pixel-corner tl" style="border-color:var(--blood-bright);"></div>
+      <div class="pixel-corner tr" style="border-color:var(--blood-bright);"></div>
+      <div class="section-title">† 閲 覧 注 意 †</div>
+      <div class="msg-box">
+        <span style="color:var(--blood-bright);">【 尋 人 啟 事 】</span><br><br>
+        █月█日　午前█時頃<br>
+        東京都██線　██駅構内にて<br>
+        24歳前後と見られる成人男性が行方不明。<br><br>
+        特徴：黒色の会社制服を着用。<br>
+        8歳前後の女児（███）と手をつないでいた。<br><br>
+        お心当たりのある方は下記までご連絡ください。<br>
+        <span style="color:var(--ash);">TEL: ██-████-████</span>
+      </div>
+      <div class="progress-label" style="margin-top:14px;">
+        <span>SAN</span>
+        <span>??? / ????</span>
+      </div>
+      <div class="pixel-progress">
+        <div class="fill" style="width:67%;"></div>
+      </div>
+    </div>
+    <!-- Surveillance Camera -->
+    <div class="surveillance-cam" id="surveillance-cam">
+      <div class="cam-lens"></div>
+      <div class="cam-label">● REC</div>
+    </div>
+    <div style="text-align:center;font-size:11px;color:var(--ash);margin-bottom:24px;letter-spacing:2px;">
+      <span style="color:var(--blood);">※</span> 監視カメラ映像 ─ 外部接続不可 <span style="color:var(--blood);">※</span>
+    </div>
   </div>
 
   <!-- Error Modal -->
@@ -878,6 +928,9 @@ document.querySelectorAll('.nav-tab').forEach(tab => {
   tab.addEventListener('click', function() {
     document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
     this.classList.add('active');
+    const target = this.dataset.tab;
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    document.getElementById('panel-' + target).classList.add('active');
   });
 });
 
