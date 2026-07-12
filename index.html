@@ -4,6 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>【は/や/く/夜/へ】</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
   :root {
     --blood: #8b0000;
@@ -130,6 +133,7 @@
   .pixel-corner.br { bottom: -2px; right: -2px; border-left: none; border-top: none; }
 
   .site-title {
+    font-family: 'Noto Serif JP', 'Yu Mincho', 'MS PMincho', serif;
     font-size: 32px;
     color: var(--blood-bright);
     text-shadow:
@@ -408,6 +412,7 @@
   }
 
   .section-title {
+    font-family: 'Noto Serif JP', 'Yu Mincho', 'MS PMincho', serif;
     font-size: 14px;
     color: var(--blood-bright);
     letter-spacing: 5px;
@@ -1003,7 +1008,7 @@ cursor.style.top = '-100px';
 animateCursor();
 
 // ===== Sparkle Click Effect =====
-const sparkleSymbols = ['†', '✧', '・', '×', '◆', '◈', '⬥', '☠', '⚰'];
+const sparkleSymbols = ['目', '瞳', '⛩', '鈴', '札', '灯', '鬼', '影', '妖', '霊', '呪', '祀', '祓', '厄'];
 
 document.addEventListener('click', (e) => {
   const count = 4 + Math.floor(Math.random() * 5);
@@ -1032,7 +1037,7 @@ function triggerRandomGlitch() {
 setTimeout(triggerRandomGlitch, 10000);
 
 // ===== Floating Eyes =====
-const eyeSymbols = ['👁', '・', '○', '◎', '◉', '⬤'];
+const eyeSymbols = ['👁', '・', '⛩', '○', '◎', '◉', '⬤', '鈴', '灯', '札'];
 function spawnFloater() {
   const floater = document.createElement('div');
   floater.className = 'floater';
