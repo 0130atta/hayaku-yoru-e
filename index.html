@@ -627,13 +627,11 @@
     position: fixed;
     pointer-events: none;
     z-index: 99995;
-    font-size: 18px;
     animation: sparkle-fly 0.7s ease-out forwards;
-    filter: drop-shadow(0 0 6px rgba(204,17,17,0.7));
   }
   @keyframes sparkle-fly {
-    0% { opacity: 1; transform: translate(0,0) scale(1.2); }
-    100% { opacity: 0; transform: translate(var(--sx), var(--sy)) scale(0); }
+    0% { opacity: 1; transform: translate(0,0) rotate(var(--rot, 0deg)) scale(1.2); }
+    100% { opacity: 0; transform: translate(var(--sx), var(--sy)) rotate(var(--rot, 0deg)) scale(0); }
   }
 
   /* ===== Footer ===== */
@@ -1008,20 +1006,70 @@ cursor.style.top = '-100px';
 animateCursor();
 
 // ===== Sparkle Click Effect =====
-const sparkleSymbols = ['👁', '⛩', '🎐', '🏮', '👹', '🦊', '🕯', '🔔', '🎴', '🎏', '🏯', '👺', '🎑', '🎋'];
+const sparkleShapes = ['circle', 'ring', 'diamond', 'cross', 'dot', 'slash'];
+
+function randomBloodColor() {
+  const colors = ['var(--blood-bright)', 'var(--blood)', '#660000', '#aa2222', 'var(--blood-dark)'];
+  return colors[Math.floor(Math.random() * colors.length)];
+}
 
 document.addEventListener('click', (e) => {
   const count = 4 + Math.floor(Math.random() * 5);
   for (let i = 0; i < count; i++) {
     const sparkle = document.createElement('div');
     sparkle.className = 'sparkle';
-    sparkle.textContent = sparkleSymbols[Math.floor(Math.random() * sparkleSymbols.length)];
+    const shape = sparkleShapes[Math.floor(Math.random() * sparkleShapes.length)];
+    const size = 6 + Math.random() * 14;
+    const color = randomBloodColor();
+
     sparkle.style.left = e.clientX + 'px';
     sparkle.style.top = e.clientY + 'px';
-    sparkle.style.setProperty('--sx', (Math.random() * 60 - 30) + 'px');
-    sparkle.style.setProperty('--sy', (Math.random() * -60 - 10) + 'px');
-    sparkle.style.animationDuration = (0.4 + Math.random() * 0.5) + 's';
-    sparkle.style.fontSize = (14 + Math.random() * 18) + 'px';
+    sparkle.style.width = size + 'px';
+    sparkle.style.height = size + 'px';
+    sparkle.style.setProperty('--sx', (Math.random() * 50 - 25) + 'px');
+    sparkle.style.setProperty('--sy', (Math.random() * -50 - 8) + 'px');
+    sparkle.style.animationDuration = (0.35 + Math.random() * 0.45) + 's';
+
+    switch (shape) {
+      case 'circle':
+        sparkle.style.borderRadius = '50%';
+        sparkle.style.background = color;
+        sparkle.style.boxShadow = '0 0 6px ' + color;
+        break;
+      case 'ring':
+        sparkle.style.borderRadius = '50%';
+        sparkle.style.border = '1.5px solid ' + color;
+        sparkle.style.boxShadow = '0 0 4px ' + color;
+        break;
+      case 'diamond':
+        sparkle.style.setProperty('--rot', '45deg');
+        sparkle.style.background = color;
+        sparkle.style.boxShadow = '0 0 5px ' + color;
+        sparkle.style.width = (size * 0.8) + 'px';
+        sparkle.style.height = (size * 0.8) + 'px';
+        break;
+      case 'cross':
+        sparkle.style.background = 'transparent';
+        sparkle.style.borderLeft = '1.5px solid ' + color;
+        sparkle.style.width = '0px';
+        sparkle.style.height = (size * 1.4) + 'px';
+        break;
+      case 'dot':
+        sparkle.style.borderRadius = '50%';
+        sparkle.style.background = color;
+        sparkle.style.width = (size * 0.35) + 'px';
+        sparkle.style.height = (size * 0.35) + 'px';
+        sparkle.style.opacity = '0.9';
+        break;
+      case 'slash':
+        sparkle.style.setProperty('--rot', '-30deg');
+        sparkle.style.background = color;
+        sparkle.style.width = (size * 1.6) + 'px';
+        sparkle.style.height = (size * 0.25) + 'px';
+        sparkle.style.borderRadius = '2px';
+        break;
+    }
+
     document.body.appendChild(sparkle);
     setTimeout(() => sparkle.remove(), 800);
   }
