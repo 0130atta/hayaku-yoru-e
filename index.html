@@ -6,7 +6,7 @@
 <title>【は/や/く/夜/へ】</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;600;700&family=Yuji+Syuku&display=swap" rel="stylesheet">
 <style>
   :root {
     --blood: #8b0000;
@@ -133,8 +133,8 @@
   .pixel-corner.br { bottom: -2px; right: -2px; border-left: none; border-top: none; }
 
   .site-title {
-    font-family: 'Noto Serif JP', 'Yu Mincho', 'MS PMincho', serif;
-    font-size: 32px;
+    font-family: 'Yuji Syuku', 'Noto Serif JP', 'Yu Mincho', serif;
+    font-size: 36px;
     color: var(--blood-bright);
     text-shadow:
       0 0 20px rgba(204,17,17,0.6),
@@ -144,8 +144,9 @@
     letter-spacing: 8px;
     margin-top: 16px;
     position: relative;
-    animation: logo-pulse 2.5s ease-in-out infinite;
+    animation: logo-pulse 3s ease-in-out infinite;
     line-height: 1.8;
+    filter: url(#ink-bleed);
   }
   @keyframes logo-pulse {
     0%, 100% { text-shadow: 0 0 20px rgba(204,17,17,0.6), 0 0 40px rgba(139,0,0,0.4), 2px 2px 0 var(--blood-dark), 4px 4px 0 rgba(0,0,0,0.6); }
@@ -704,7 +705,7 @@
       letter-spacing: 2px;
     }
     .site-title {
-      font-size: 24px;
+      font-size: 26px;
       letter-spacing: 4px;
       line-height: 1.6;
     }
@@ -790,6 +791,19 @@
 </head>
 <body>
 
+<svg style="position:absolute;width:0;height:0;pointer-events:none;" aria-hidden="true">
+  <defs>
+    <filter id="ink-bleed" x="-10%" y="-10%" width="120%" height="120%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.04" numOctaves="4" result="noise" />
+      <feDisplacementMap in="SourceGraphic" in2="noise" scale="2.5" xChannelSelector="R" yChannelSelector="G" result="displaced" />
+      <feGaussianBlur in="displaced" stdDeviation="0.4" result="blurred" />
+      <feMerge>
+        <feMergeNode in="blurred" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+  </defs>
+</svg>
 <div class="scanlines"></div>
 <div class="custom-cursor" id="cursor">👁</div>
 
